@@ -24,6 +24,8 @@ const Content = styled.table`
 		font-weight: bold;
 		.main {
 			font-size: 35px;
+			font-family: 'Montserrat', sans-serif;
+			letter-spacing: 7.5px;
 			span {
 				font-size: 25px;
 			}
