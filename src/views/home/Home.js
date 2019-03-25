@@ -1,7 +1,13 @@
 // @flow
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { TodoReducerType } from '../../store/todo/reducer';
+import { setNewTodo } from '../../store/todo/actions';
 
-type Props = {}
+type Props = {
+	todoReducer: TodoReducerType;
+	setNewTodo: Function;
+}
 
 type State = {
 	newTodo: string;
@@ -14,62 +20,50 @@ class Home extends Component<Props, State> {
 		this.state = {
 			newTodo: '',
 			todos: [],
-		}
+		};
 	}
 
-	componentDidMount() {};
+	componentDidMount() {}
 
-	handleNewTodo = (e: Event) => {
+	handleNewTodo = (e: { target: { value: string } }) => {
 		const { value } = e.target;
-
 		this.setState({
 			newTodo: value,
 		});
 	}
 
 	addNewTodo = () => {
-		const { newTodo, todos } = this.state;
-		if (newTodo) {
-			todos.push(newTodo);
-		}
-		this.setState({
-			newTodo: '',
-			todos,
-		});
+		this.props.setNewTodo(this.state.newTodo);
 	}
 
 	render() {
-		const { newTodo, todos } = this.state;
+		const { todoReducer:  { todo } } = this.props; 
+		const { newTodo } = this.state;
 		return (
 			<div>
+				<div>Current Todo => {todo}</div>
 				<div>
-					<div style={{ padding: '20px 0' }}>
-						Add Todo List
-					</div>
-					<div>
-						<input
-							value={newTodo}
-							type="text"
-							onChange={this.handleNewTodo}
-						/>
-						<button onClick={this.addNewTodo}>
-							ADD
-						</button>
-					</div>
-
-					<div>
-						<ol>
-							{todos.map(each => (
-								<li>
-									{each}
-								</li>
-							))}
-						</ol>
-					</div>
+					<input value={newTodo} type="text" onChange={this.handleNewTodo}/>
+					<button onClick={this.addNewTodo}>
+						change
+					</button>
 				</div>
 			</div>
 		);
 	}
 }
 
-export default Home;
+const mapStateToProps = state => {
+	const { todoReducer } = state;
+	return {
+		todoReducer,
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		setNewTodo: newTodo => dispatch(setNewTodo(newTodo)),
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
