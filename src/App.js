@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import './App.css';
+import Layout from './Layout';
 
 const theme = {
 	primaryColor: '#000000',
@@ -17,11 +18,11 @@ class App extends Component<Props, {}> {
 	render() {
 		return (
 			<div className="App">
-				<div>
-					<ThemeProvider theme={theme}>
+				<ThemeProvider theme={theme}>
+					<Layout>
 						{this.props.children}
-					</ThemeProvider>
-				</div>
+					</Layout>
+				</ThemeProvider>
 			</div>
 		);
 	}
