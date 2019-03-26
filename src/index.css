@@ -1,3 +1,33 @@
+@font-face {
+  font-family: 'Open Sans';
+  src: url(./assets/font/OpenSans-Regular.ttf);
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url(./assets/font/OpenSans-Light.ttf);
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url(./assets/font/OpenSans-SemiBold.ttf);
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url(./assets/font/OpenSans-Bold.ttf);
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url(./assets/font/Montserrat-Bold.ttf);
+  font-weight: bold;
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -8,10 +38,20 @@ html {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	height: 100%;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Open Sans', sans-serif;
+	font-family: 'Open Sans', sans-serif;
+	color: #000000;
+	min-height:100%;
+	position:relative; 
+}
+
+body::after {
+  content: '';
+  display: block;
+  height: 50px; /* Set same as footer's height */
 }
