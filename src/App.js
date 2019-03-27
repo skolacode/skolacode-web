@@ -8,6 +8,7 @@ import Layout from './Layout';
 const theme = {
 	primaryColor: '#000000',
 	secondaryColor: '#ffffff',
+	thirdColor: '#fdf2de',
 };
 
 type Props = {

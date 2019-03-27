@@ -48,6 +48,7 @@ body {
 	color: #000000;
 	min-height:100%;
 	position:relative; 
+	font-size: 16px;
 }
 
 body::after {

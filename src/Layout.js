@@ -13,7 +13,7 @@ const NavigationContainer = styled.div`
 	position: fixed;
 	top: 0;
 	width: 100%;
-	border-bottom: 1px solid ${props => props.theme.primaryColor};
+	border-bottom: 1px solid ${props => props.theme.thirdColor};
 	height: 60px;
 	background-color: ${props => props.theme.secondaryColor};
 	z-index: 10;
