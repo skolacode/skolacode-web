@@ -7,6 +7,7 @@ import App from './App';
 import Home from './views/home/Home';
 import Articles from './views/articles/Articles';
 import Profile from './views/profile/Profile';
+import CreateArticle from './views/articles/CreateArticle';
 
 function AppRouter() {
 	return (
@@ -15,7 +16,7 @@ function AppRouter() {
 				<App>
 					<Route path="/" exact component={Home} />
 					<Route path="/articles" exact component={Articles} />
-
+					<Route path="/articles/new" exact component={CreateArticle} />
 					<Route path="/profile" exact component={Profile} />
 				</App>
 			</Provider>

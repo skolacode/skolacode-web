@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import Article from './Article';
 import NoticeBoard from './NoticeBoard';
-import { Wrapper } from '../ui/style';
+import { Wrapper, PageLabel } from '../ui/style';
 
 type Props = {
 	title: string;
@@ -44,9 +44,9 @@ class ArticleWithNoticeBoard extends Component<Props, {}> {
 							<tbody>
 								<tr>
 									<td className="first">
-										<div style={{ marginBottom: 25, fontSize: 25, fontWeight: 'bold' }}>
+										<PageLabel>
 											{this.props.title}
-										</div>
+										</PageLabel>
 
 										{[0,10,2,3,4,5].map(each => (
 											<>

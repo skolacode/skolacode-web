@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import { Wrapper } from '../../components/ui/style';
+import { Wrapper, PageLabel } from '../../components/ui/style';
 import Article from '../../components/custom/Article';
 
 type State = {
@@ -71,7 +71,7 @@ class Profile extends Component<{}, State> {
 		};
 	}
 
-	onChangeTab = (val) => {
+	onChangeTab = (val: string) => {
 		this.setState({
 			tab: val,
 		});
@@ -98,6 +98,9 @@ class Profile extends Component<{}, State> {
 		return (
 			<div style={{ marginTop: 25 }}>
 				<Wrapper>
+					<PageLabel>
+						PROFILE
+					</PageLabel>
 					<User>
 						<tbody>
 							<tr>
@@ -126,13 +129,20 @@ class Profile extends Component<{}, State> {
 								style={{ marginRight: 20 }}
 								onClick={() => this.onChangeTab('articles')}
 							>
-								YOUR ARTICLES
+								ARTICLES
 							</Tab>
 							<Tab
 								primary={tab === 'unpublished'}
+								style={{ marginRight: 20 }}
 								onClick={() => this.onChangeTab('unpublished')}
 							>
 								UNPUBLISHED ARTICLES
+							</Tab>
+							<Tab
+								primary={tab === 'review'}
+								onClick={() => this.onChangeTab('review')}
+							>
+								REVIEW ARTICLES
 							</Tab>
 						</div>
 					</div>
@@ -140,7 +150,7 @@ class Profile extends Component<{}, State> {
 						<ArticlesTable>
 							<tbody>
 								{[0,1,1,1,23,0].map(each => (
-									<tr>
+									<tr key={each}>
 										<td>
 											<Article />
 										</td>

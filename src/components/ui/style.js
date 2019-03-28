@@ -6,6 +6,13 @@ const Wrapper = styled.div`
 	margin: auto;
 `;
 
+const PageLabel = styled.div`
+	margin-bottom: 25px;
+	font-size: 25px;
+	font-weight: bold;
+`;
+
 export {
 	Wrapper,
+	PageLabel,
 };
