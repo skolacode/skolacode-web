@@ -1,13 +1,16 @@
 //@flow
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
 import Article from './Article';
 import NoticeBoard from './NoticeBoard';
 import { Wrapper, PageLabel } from '../ui/style';
+import { fetchPublishedArticles } from '../../store/articles/actions';
 
 type Props = {
 	title: string;
+	fetchPublishedArticles: Function;
 }
 
 const Content = styled.table`
@@ -35,6 +38,15 @@ const Content = styled.table`
 `;
 
 class ArticleWithNoticeBoard extends Component<Props, {}> {
+	componentDidMount() {
+		this.props.fetchPublishedArticles({
+			success: () => {
+
+			},
+			error: () => {},
+		});
+	}
+
 	render() {
 		return (
 			<div>
@@ -49,10 +61,10 @@ class ArticleWithNoticeBoard extends Component<Props, {}> {
 										</PageLabel>
 
 										{[0,10,2,3,4,5].map(each => (
-											<>
-												<Article key={each} />
+											<div key={each}>
+												<Article />
 												<div className="border-line"/>
-											</>
+											</div>
 										))}
 
 									</td>
@@ -69,4 +81,23 @@ class ArticleWithNoticeBoard extends Component<Props, {}> {
 	}
 }
 
-export default ArticleWithNoticeBoard;
+const mapStateToProps = state => {
+	const {
+		articlesReducer: { articles }
+	} = state;
+
+	return {
+		articles
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchPublishedArticles: req => dispatch(fetchPublishedArticles(req)),
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(ArticleWithNoticeBoard);

@@ -10,4 +10,5 @@ class Articles extends Component<{}, {}> {
 		);
 	}
 }
+
 export default Articles;
