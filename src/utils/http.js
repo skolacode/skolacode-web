@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const instance = axios.create({
 	baseURL: 'http://localhost:8080/api/v1',
@@ -10,11 +11,14 @@ const instance = axios.create({
 });
 
 const api = (method, url, body) => {
-	const token = '';
-
-	const customHeaders = {
-		'Authorization': `Bearer ${token}`,
-	};
+	let customHeaders = {};
+	const accessToken = Cookies.get('SKOLACODE-SID');
+	
+	if (accessToken) {
+		customHeaders = {
+			'Authorization': `Bearer ${accessToken}`,
+		};
+	}
 
 	return instance(
 		{
@@ -24,11 +28,11 @@ const api = (method, url, body) => {
 			headers: customHeaders,
 		}
 	).then(res => {
-		console.log('RESPONSE => ', res);
-		return res.data;
+		console.log('RESPONSE => ', res.data);
+		return Promise.resolve(res.data);
 	}).catch(err => {
-		console.error(err);
-		return err;
+		console.error(JSON.stringify(err.response.data));
+		return Promise.reject(err);
 	});
 };
 

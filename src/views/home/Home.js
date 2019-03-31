@@ -8,7 +8,7 @@ import { setNewTodo } from '../../store/todo/actions';
 import { Wrapper } from '../../components/ui/style';
 
 import data_icon from '../../assets/icons/data.png';
-import ArticleWithNoticeBoard from '../../components/custom/ArticleWithNoticeBoard';
+import { ArticleWithNoticeBoard } from '../../components';
 
 type Props = {
 	todoReducer: TodoReducerType;

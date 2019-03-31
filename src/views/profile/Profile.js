@@ -1,11 +1,21 @@
 //@flow
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import { Article } from '../../components/';
 import { Wrapper, PageLabel } from '../../components/ui/style';
-import Article from '../../components/custom/Article';
+import { fetchUserPublishedArticles } from '../../store/articles/actions';
+
+type Props = {
+	user: Object;
+	userPublishedArticles: Array<Object>;
+	fetchUserPublishedArticles: Function;
+}
 
 type State = {
+	isLoading: boolean;
 	tab: string;
 }
 
@@ -63,12 +73,25 @@ const ArticlesTable = styled.table`
 	}
 `;
 
-class Profile extends Component<{}, State> {
+class Profile extends Component<Props, State> {
 	constructor() {
 		super();
 		this.state = {
+			isLoading: true,
 			tab: 'articles',
 		};
+	}
+
+	componentDidMount() {
+		this.props.fetchUserPublishedArticles({
+			body: {},
+			success: () => {
+				this.setState({
+					isLoading: false,
+				});
+			},
+			error: () => {},
+		});
 	}
 
 	onChangeTab = (val: string) => {
@@ -78,20 +101,21 @@ class Profile extends Component<{}, State> {
 	}
 
 	render() {
-		const { tab } = this.state;
+		const { userPublishedArticles, user } = this.props;
+		const { isLoading, tab } = this.state;
 
 		const userInfo = [
 			{
 				label: 'Name',
-				value: 'Ahmad Ibrahim',
+				value: user.displayName,
 			},
 			{
 				label: 'Email',
-				value: 'aibrahim3546@gmail.com',
+				value: user.email,
 			},
 			{
 				label: 'Role',
-				value: 'Master',
+				value: user.role,
 			}
 		];
 		
@@ -105,18 +129,18 @@ class Profile extends Component<{}, State> {
 						<tbody>
 							<tr>
 								<td style={{ width: 150 }}>
-									<AvatarImage src="https://avatars0.githubusercontent.com/u/31366174?s=460&v=4"/>
+									<AvatarImage src={user.avatarUrl}/>
 								</td>
 								<td style={{ paddingLeft: 50 }}>
 									{userInfo.map(each => (
-										<>
+										<div key={each.label}>
 											<div key={each.label} className="label">
 												{each.label}
 											</div>
 											<div className="value">
 												{each.value}
 											</div>
-										</>
+										</div>
 									))}
 								</td>
 							</tr>
@@ -147,22 +171,29 @@ class Profile extends Component<{}, State> {
 						</div>
 					</div>
 					<div>
-						<ArticlesTable>
-							<tbody>
-								{[0,1,1,1,23,0].map(each => (
-									<tr key={each}>
-										<td>
-											<Article />
-										</td>
-										<td style={{ width: 200, textAlign: 'right' }}>
-											<div style={{ fontWeight: 'bold' }}>
-												...
-											</div>
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</ArticlesTable>
+						{isLoading
+							? (
+								'Loading...'
+							) : (
+								<ArticlesTable>
+									<tbody>
+										{userPublishedArticles.map(each => (
+											<tr key={each._id}>
+												<td>
+													<Link to={`/articles/${each._id}/read`}>
+														<Article article={each}/>
+													</Link>
+												</td>
+												<td style={{ width: 200, textAlign: 'right' }}>
+													<div style={{ fontWeight: 'bold' }}>
+														...
+													</div>
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</ArticlesTable>
+							)}
 					</div>
 				</Wrapper>
 			</div>
@@ -170,4 +201,19 @@ class Profile extends Component<{}, State> {
 	}
 }
 
-export default Profile;
+const mapStateToProps = state => {
+	const { articlesReducer: { userPublishedArticles} } = state;
+
+	return { userPublishedArticles };
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchUserPublishedArticles: req => dispatch(fetchUserPublishedArticles(req)),
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+)(Profile);

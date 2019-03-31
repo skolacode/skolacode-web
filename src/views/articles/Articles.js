@@ -1,7 +1,7 @@
 //@flow
 import React, { Component } from 'react';
 
-import ArticleWithNoticeBoard from '../../components/custom/ArticleWithNoticeBoard';
+import { ArticleWithNoticeBoard } from '../../components';
 
 class Articles extends Component<{}, {}> {
 	render() {

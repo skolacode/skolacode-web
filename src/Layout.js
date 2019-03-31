@@ -78,7 +78,7 @@ const NAVIGATION = [
 	},
 	{
 		name: 'CONTACT US',
-		link: '/contact-us',
+		link: '/profile',
 	},
 ];
 

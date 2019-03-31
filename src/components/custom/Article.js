@@ -1,8 +1,11 @@
 //@flow
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
 
-import data_icon from '../../assets/icons/data.png';
+type Props = {
+	article: Object;
+}
 
 const ArticleContainer = styled.div`
 	display: table;
@@ -20,7 +23,7 @@ const ArticleContainer = styled.div`
 		margin-bottom: 10px;
 	}
 
-	.content {
+	.description {
 		font-size: 14px;
 		margin-bottom: 15px;
 	}
@@ -32,23 +35,24 @@ const ArticleContainer = styled.div`
 	}
 `;
 
-class Article extends Component<{}, {}> {
+class Article extends Component<Props, {}> {
 	render() {
+		const { article } = this.props;
 		return (
 			<ArticleContainer>
 				<div style={{ float: 'left', width: '25%' }}>
-					<img src={data_icon} alt="" style={{ width: '100%' }}/>
+					<img src={article.headerImgUrl} alt="" style={{ width: '100%' }}/>
 				</div>
 				<div style={{ float: 'left', width: '75%', paddingLeft: 15 }}>
 					<div className="title">
-						SQL vs NoSql
+						{article.title}
 					</div>
 					<div className="line"/>
-					<div className="content">
-						Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s...
+					<div className="description">
+						{article.description}
 					</div>
 					<div className="author">
-						IBRAHIM 9 MARCH 2019
+						{article.author.displayName} {moment(article.createdAt).format('DD MMMM YYYY')}
 					</div>
 				</div>
 			</ArticleContainer>

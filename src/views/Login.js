@@ -1,7 +1,6 @@
 //@flow
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { loginUser } from '../store/auth/actions';
 
 type Props = {};
 
@@ -60,10 +59,7 @@ class Login extends Component<Props, State> {
 					<div
 						className="btn"
 						onClick={() => {
-							loginUser({
-								success: () => {},
-								error: () => {},
-							});
+							window.location.href = 'http://localhost:8080/api/v1/oauth/github';
 						}}
 					>
 						Sign In with GitHub

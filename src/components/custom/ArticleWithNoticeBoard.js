@@ -10,6 +10,7 @@ import { fetchPublishedArticles } from '../../store/articles/actions';
 
 type Props = {
 	title: string;
+	publishedArticles: Array<Object>;
 	fetchPublishedArticles: Function;
 }
 
@@ -24,7 +25,7 @@ const Content = styled.table`
 			margin-bottom: 40px;
 			height: 1px;
 			width: 100%;
-			border-bottom: 1px solid #eee;
+			border-bottom: 1px solid ${props => props.theme.thirdColor};
 			:last-child {
 				border-bottom: none;
 			}
@@ -48,6 +49,7 @@ class ArticleWithNoticeBoard extends Component<Props, {}> {
 	}
 
 	render() {
+		const { title, publishedArticles } = this.props;
 		return (
 			<div>
 				<Wrapper>
@@ -57,12 +59,12 @@ class ArticleWithNoticeBoard extends Component<Props, {}> {
 								<tr>
 									<td className="first">
 										<PageLabel>
-											{this.props.title}
+											{title}
 										</PageLabel>
 
-										{[0,10,2,3,4,5].map(each => (
-											<div key={each}>
-												<Article />
+										{publishedArticles.map(each => (
+											<div key={each._id}>
+												<Article article={each}/>
 												<div className="border-line"/>
 											</div>
 										))}
@@ -83,11 +85,11 @@ class ArticleWithNoticeBoard extends Component<Props, {}> {
 
 const mapStateToProps = state => {
 	const {
-		articlesReducer: { articles }
+		articlesReducer: { publishedArticles }
 	} = state;
 
 	return {
-		articles
+		publishedArticles
 	};
 };
 
