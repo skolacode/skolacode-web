@@ -1,8 +1,14 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
+
 import { TodoReducerType } from '../../store/todo/reducer';
 import { setNewTodo } from '../../store/todo/actions';
+import { Wrapper } from '../../components/ui/style';
+
+import data_icon from '../../assets/icons/data.png';
+import { ArticleWithNoticeBoard } from '../../components';
 
 type Props = {
 	todoReducer: TodoReducerType;
@@ -13,6 +19,40 @@ type State = {
 	newTodo: string;
 	todos: Array<string>;
 }
+
+const MainContent = styled.table`
+	td {
+		padding: 70px 0;
+		color: ${props => props.theme.primaryColor};
+		font-weight: bold;
+		.main {
+			font-size: 35px;
+			font-family: 'Montserrat', sans-serif;
+			letter-spacing: 7.5px;
+			span {
+				font-size: 25px;
+			}
+		}
+
+		.secondary {
+			font-size: 20px;
+			margin-bottom: 20px;
+			font-weight: normal;
+			line-height: 30px;
+		}
+
+		.button {
+			background-color: ${props => props.theme.secondaryColor};
+			padding: 10px 0;
+			font-size: 18px;
+			color: ${props => props.theme.primaryColor};
+			text-align: center;
+			width: 210px;
+			border: 1px solid ${props => props.theme.primaryColor};
+			box-shadow: 10px 10px;
+		}
+	}
+`;
 
 class Home extends Component<Props, State> {
 	constructor(props: Props) {
@@ -37,17 +77,35 @@ class Home extends Component<Props, State> {
 	}
 
 	render() {
-		const { todoReducer:  { todo } } = this.props; 
-		const { newTodo } = this.state;
 		return (
 			<div>
-				<div>Current Todo => {todo}</div>
-				<div>
-					<input value={newTodo} type="text" onChange={this.handleNewTodo}/>
-					<button onClick={this.addNewTodo}>
-						change
-					</button>
+				<div style={{ backgroundColor: '#fdf2de' }}>
+					<Wrapper>
+						<MainContent>
+							<tbody>
+								<tr>
+									<td>
+										<div className="main">SKOLACODE.<span>COM</span></div>
+										<div className="secondary">
+											A platform build focusing on students
+											<div />
+											and beginners. Get started by writing
+											<div />
+											your first tech article. 
+										</div>
+										<div className="button">
+											Join Now
+										</div>
+									</td>
+									<td style={{ width: 256, textAlign: 'right' }}>
+										<img src={data_icon} alt="" style={{ width: '100%' }}/>
+									</td>
+								</tr>
+							</tbody>
+						</MainContent>
+					</Wrapper>
 				</div>
+				<ArticleWithNoticeBoard title="LATEST ARTICLES"/>
 			</div>
 		);
 	}
