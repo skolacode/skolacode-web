@@ -14,7 +14,7 @@ type Props = {
 	fetchArticle: Function;
 	match: {
 		params: {
-			key: string;
+			id: string;
 		}
 	};
 };

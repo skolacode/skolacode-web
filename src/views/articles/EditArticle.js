@@ -13,6 +13,7 @@ type Props = {
 			id: string;
 		}
 	};
+	fetchArticle: Function;
 };
 
 type State = {

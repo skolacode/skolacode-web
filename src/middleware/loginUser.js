@@ -7,9 +7,19 @@ import Cookies from 'js-cookie';
 import { fetchUser } from '../store/user/actions';
 
 
+type State = {
+	isLoading: boolean;
+}
+
+type Props = {
+	user: Object;
+	history: History;
+	fetchUser: Function;
+}
+
 // This function takes a component...
-function loginUser(WrappedComponent) {
-	class LoginUser extends Component {
+function loginUser(WrappedComponent: Function) {
+	class LoginUser extends Component<Props, State> {
 		constructor(props) {
 			super(props);
 			this.state = {
@@ -18,7 +28,6 @@ function loginUser(WrappedComponent) {
 		}
 
 		componentDidMount() {
-			console.log(this.props);
 			const { user, history } = this.props;
 			const accessToken = Cookies.get('SKOLACODE-SID');
 

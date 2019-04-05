@@ -280,7 +280,7 @@ class ArticleEditor extends Component<Props, State> {
 									type="text"
 									placeholder="Header Image Url"
 									style={{ maxWidth: 500, fontSize: 12 }}
-									onChange={(e) => this.handeleChange(e, 'headerImgUrl')}
+									onChange={(e) => this.handleChange(e, 'headerImgUrl')}
 									value={headerImgUrl}
 								/>
 							</div>
