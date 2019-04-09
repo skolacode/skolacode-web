@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { Wrapper, PageLabel } from '../../../components/ui/style';
+import { Wrapper, PageLabel, Button } from '../../../components/ui/style';
 import { createArticle, editArticle } from '../../../store/articles/actions';
 
 type Props ={
@@ -78,19 +78,6 @@ const Menu = styled.table`
 		padding: 15px;
 		background-color: #eee;
 	}
-`;
-
-const Button = styled.span`
-	margin-top: 10px;
-	padding: 10px 15px;
-	color: ${props => props.theme.secondaryColor};
-	text-align: center;
-	font-weight: bold;
-	background-color: ${props => props.bgColor};
-	font-size: 14px;
-	position: relative;
-	top: ${props => props.primary ? '5px' : '0'};
-	cursor: pointer;
 `;
 
 const HeaderImg = styled.div`

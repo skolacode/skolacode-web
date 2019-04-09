@@ -1,17 +1,19 @@
 //@flow
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Article } from '../../components/';
 import { Wrapper, PageLabel } from '../../components/ui/style';
-import { fetchUserPublishedArticles } from '../../store/articles/actions';
+import { fetchUserPublishedArticles, fetchUserUnpublishedArticles } from '../../store/articles/actions';
+import UserArticles from './components/UserArticles';
 
 type Props = {
 	user: Object;
 	userPublishedArticles: Array<Object>;
+	userUnpublishedArticles: Array<Object>;
 	fetchUserPublishedArticles: Function;
+	fetchUserUnpublishedArticles: Function;
 }
 
 type State = {
@@ -59,20 +61,6 @@ const Tab = styled.span`
 	cursor: pointer;
 `;
 
-const ArticlesTable = styled.table`
-	td {
-		padding: 50px 0;
-		border-bottom: 1px solid ${props => props.theme.thirdColor};
-	}
-	tr {
-		:last-child {
-			td {
-				border-bottom: none;
-			}
-		}
-	}
-`;
-
 class Profile extends Component<Props, State> {
 	constructor() {
 		super();
@@ -82,8 +70,14 @@ class Profile extends Component<Props, State> {
 		};
 	}
 
-	componentDidMount() {
-		this.props.fetchUserPublishedArticles({
+	async componentDidMount() {
+		await this.props.fetchUserPublishedArticles({
+			body: {},
+			success: () => {},
+			error: () => {},
+		});
+
+		this.props.fetchUserUnpublishedArticles({
 			body: {},
 			success: () => {
 				this.setState({
@@ -101,7 +95,7 @@ class Profile extends Component<Props, State> {
 	}
 
 	render() {
-		const { userPublishedArticles, user } = this.props;
+		const { userPublishedArticles, userUnpublishedArticles, user } = this.props;
 		const { isLoading, tab } = this.state;
 
 		const userInfo = [
@@ -163,10 +157,21 @@ class Profile extends Component<Props, State> {
 								UNPUBLISHED ARTICLES
 							</Tab>
 							<Tab
-								primary={tab === 'review'}
-								onClick={() => this.onChangeTab('review')}
+								primary={false}
+								style={{
+									backgroundColor: '#000',
+									boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.5)',
+									borderRadius: 2,
+								}}
 							>
-								REVIEW ARTICLES
+								<Link
+									style={{
+										color: '#fff',
+									}}
+									to="/articles/new"
+								>
+									+ NEW ARTICLE
+								</Link>
 							</Tab>
 						</div>
 					</div>
@@ -175,24 +180,14 @@ class Profile extends Component<Props, State> {
 							? (
 								'Loading...'
 							) : (
-								<ArticlesTable>
-									<tbody>
-										{userPublishedArticles.map(each => (
-											<tr key={each._id}>
-												<td>
-													<Link to={`/articles/${each._id}/read`}>
-														<Article article={each}/>
-													</Link>
-												</td>
-												<td style={{ width: 200, textAlign: 'right' }}>
-													<div style={{ fontWeight: 'bold' }}>
-														...
-													</div>
-												</td>
-											</tr>
-										))}
-									</tbody>
-								</ArticlesTable>
+								<>
+									{tab === 'articles'
+										? (
+											<UserArticles articles={userPublishedArticles} />
+										) : (
+											<UserArticles articles={userUnpublishedArticles} />
+										)}
+								</>
 							)}
 					</div>
 				</Wrapper>
@@ -202,14 +197,15 @@ class Profile extends Component<Props, State> {
 }
 
 const mapStateToProps = state => {
-	const { articlesReducer: { userPublishedArticles} } = state;
+	const { articlesReducer: { userPublishedArticles, userUnpublishedArticles } } = state;
 
-	return { userPublishedArticles };
+	return { userPublishedArticles, userUnpublishedArticles };
 };
 
 const mapDispatchToProps = dispatch => {
 	return {
 		fetchUserPublishedArticles: req => dispatch(fetchUserPublishedArticles(req)),
+		fetchUserUnpublishedArticles: req => dispatch(fetchUserUnpublishedArticles(req)),
 	};
 };
 
