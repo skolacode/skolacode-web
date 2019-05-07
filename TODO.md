@@ -1,3 +1,3 @@
-- styled-components
-- eslint
-- redux
+- create post
+- update post
+- delete post
