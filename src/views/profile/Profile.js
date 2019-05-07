@@ -104,10 +104,6 @@ class Profile extends Component<Props, State> {
 				value: user.displayName,
 			},
 			{
-				label: 'Email',
-				value: user.email,
-			},
-			{
 				label: 'Role',
 				value: user.role,
 			}

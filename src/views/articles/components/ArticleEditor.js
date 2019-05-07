@@ -18,6 +18,7 @@ type Props ={
 type State = {
 	isLoading: boolean;
 	isSaving: boolean;
+	isRequired: boolean;
 	textAreaHeight: number;
 	headerImgUrl: string;
 	title: string;
@@ -108,6 +109,7 @@ class ArticleEditor extends Component<Props, State> {
 		this.state = {
 			isLoading: true,
 			isSaving: false,
+			isRequired: false,
 			textAreaHeight: 0,
 			headerImgUrl: '',
 			title: '',
@@ -146,7 +148,7 @@ class ArticleEditor extends Component<Props, State> {
 
 	onHandleAction = (isPublished) => {
 		const { isEditing, article, history } = this.props;
-		const { headerImgUrl, title, description, content, isSaving } = this.state;
+		const { headerImgUrl, title, description, content, isSaving, isRequired } = this.state;
 
 		let body = {
 			headerImgUrl,
@@ -156,8 +158,19 @@ class ArticleEditor extends Component<Props, State> {
 			isPublished,
 			tags: [],
 		};
+
+		const requiredFields = [headerImgUrl, title, description, content];
+
+		for (let i = 0; i < requiredFields.length; i++) {
+			if (requiredFields[i] === '') {
+				this.setState({
+					isRequired: true,
+				});
+				break;
+			}
+		}
 		
-		if(!isSaving) {
+		if(!isSaving && !isRequired) {
 			this.setState({
 				isSaving: true,
 			});
@@ -171,13 +184,23 @@ class ArticleEditor extends Component<Props, State> {
 					success: () => {
 						history.push(`/articles/${article._id}/read`);
 					},
-					error: () => {},
+					error: () => {
+						this.setState({
+							isSaving: false,
+						});
+					},
 				});
 			} else {
 				this.props.createArticle({
 					body,
-					success: () => {},
-					error: () => {},
+					success: () => {
+						history.push('/articles');
+					},
+					error: () => {
+						this.setState({
+							isSaving: false,
+						});
+					},
 				});
 			}
 		}
@@ -185,7 +208,7 @@ class ArticleEditor extends Component<Props, State> {
 
 	render() {
 		const { isEditing, article } = this.props;
-		const { textAreaHeight, headerImgUrl, title, description, content, isSaving } = this.state;
+		const { textAreaHeight, headerImgUrl, title, description, content, isSaving, isRequired } = this.state;
 		return (
 			<div style={{ marginTop: 25 }}>
 				<Wrapper>
@@ -230,6 +253,7 @@ class ArticleEditor extends Component<Props, State> {
 							<li>Make sure the content are not too short</li>
 							<li>Make sure the delivered content are understandable by readers</li>
 							<li>Make sure to credit the author if the content or image are not yours</li>
+							<li>All fields are required</li>
 						</ul>
 					</Rules>
 
@@ -258,9 +282,16 @@ class ArticleEditor extends Component<Props, State> {
 							</tbody>
 						</Menu>
 
+						{isRequired
+							&& (
+								<div style={{ fontSize: 20, marginBottom: 20, backgroundColor: 'red', padding: '5px 10px', color: '#fff' }}>
+									<em>All fields are required</em>
+								</div>
+							)}
+
 						<HeaderImg>
 							<div className="label">
-								Header Image
+								* Header Image
 							</div>
 							<div>
 								<input
@@ -274,7 +305,7 @@ class ArticleEditor extends Component<Props, State> {
 						</HeaderImg>
 						<ContentContainer>
 							<div className="label">
-								Title
+								* Title
 							</div>
 							<div>
 								<input
@@ -289,7 +320,7 @@ class ArticleEditor extends Component<Props, State> {
 
 						<ContentContainer>
 							<div className="label">
-								Description
+								* Description
 							</div>
 							<div>
 								<input
@@ -304,13 +335,13 @@ class ArticleEditor extends Component<Props, State> {
 
 						<ContentContainer>
 							<div className="label">
-								Content
+								* Content
 							</div>
 							<div>
 								<textarea
 									type="text"
 									placeholder="Start typing here (markdown supported)"
-									style={{ height: textAreaHeight + 20 }}
+									style={{ height: textAreaHeight }}
 									onChange={(e) => {
 										this.setState({
 											content: e.target.value,
