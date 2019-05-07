@@ -78,7 +78,7 @@ const NAVIGATION = [
 	},
 	{
 		name: 'CONTACT US',
-		link: '/profile',
+		link: '/contact-us',
 	},
 ];
 
@@ -114,6 +114,9 @@ class Layout extends Component<Props, State> {
 				<Footer>
 					<div className="skolacode">
 						SKOLACODE.<span style={{ fontSize: 12 }}>COM</span>
+					</div>
+					<div style={{ fontSize: 10, textAlign: 'center' }}>
+						<div>Icons made by <a style={{ color: '#fff' }} href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a style={{ color: '#fff' }} href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a style={{ color: '#fff' }} href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 					</div>
 				</Footer>
 			</div>

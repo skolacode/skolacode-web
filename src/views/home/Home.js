@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 import { TodoReducerType } from '../../store/todo/reducer';
 import { setNewTodo } from '../../store/todo/actions';
@@ -50,6 +51,12 @@ const MainContent = styled.table`
 			width: 210px;
 			border: 1px solid ${props => props.theme.primaryColor};
 			box-shadow: 10px 10px;
+			cursor: pointer;
+			transition: all 0.25s;
+
+			:hover {
+				box-shadow: 5px 5px;
+			}
 		}
 	}
 `;
@@ -89,13 +96,16 @@ class Home extends Component<Props, State> {
 										<div className="secondary">
 											A platform build focusing on students
 											<div />
-											and beginners. Get started by writing
+											and beginners. Get started by checking
 											<div />
-											your first tech article. 
+											out the courses we offer.
 										</div>
-										<div className="button">
-											Join Now
-										</div>
+
+										<Link to="/courses">
+											<div className="button">
+												Courses
+											</div>
+										</Link>
 									</td>
 									<td style={{ width: 256, textAlign: 'right' }}>
 										<img src={data_icon} alt="" style={{ width: '100%' }}/>
