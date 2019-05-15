@@ -3,10 +3,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
 
 import { Wrapper, PageLabel } from '../../components/ui/style';
 import { fetchUserPublishedArticles, fetchUserUnpublishedArticles } from '../../store/articles/actions';
 import UserArticles from './components/UserArticles';
+import { WEB_URL } from '../../utils/config';
 
 type Props = {
 	user: Object;
@@ -132,6 +134,23 @@ class Profile extends Component<Props, State> {
 											</div>
 										</div>
 									))}
+									<div style={{ marginTop: 30 }}>
+										<Tab
+											primary={false}
+											style={{
+												padding: 10,
+												fontSize: 12,
+												backgroundColor: '#000',
+												color: '#fff',
+											}}
+											onClick={() => {
+												Cookies.remove('SKOLACODE-SID');
+												window.location.href = WEB_URL;
+											}}
+										>
+											LOGOUT
+										</Tab>
+									</div>
 								</td>
 							</tr>
 						</tbody>

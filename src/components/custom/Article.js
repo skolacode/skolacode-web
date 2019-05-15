@@ -9,6 +9,7 @@ type Props = {
 
 const ArticleContainer = styled.div`
 	display: table;
+	width: 100%;
 
 	.title {
 			font-weight: bold;

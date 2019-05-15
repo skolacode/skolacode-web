@@ -1,6 +1,7 @@
 //@flow
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Article from './Article';
@@ -64,8 +65,10 @@ class ArticleWithNoticeBoard extends Component<Props, {}> {
 
 										{publishedArticles.map(each => (
 											<div key={each._id}>
-												<Article article={each}/>
-												<div className="border-line"/>
+												<Link to={`/articles/${each._id}/read`}>
+													<Article article={each}/>
+													<div className="border-line"/>
+												</Link>
 											</div>
 										))}
 

@@ -83,7 +83,7 @@ export const createArticle = (req = {}) => {
 		try {
 			const response = await http.POST('/articles', req.body);
 			dispatch(getArticle(response));
-			req.success();
+			req.success(response._id);
 		} catch(err) {
 			console.error(err);
 			req.error();

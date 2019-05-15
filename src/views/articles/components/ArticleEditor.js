@@ -1,24 +1,29 @@
 //@flow
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import type { RouterHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import { UserReducerType } from '../../../store/user/reducer';
 import { Wrapper, PageLabel, Button } from '../../../components/ui/style';
 import { createArticle, editArticle } from '../../../store/articles/actions';
+import ArticleContent from '../../../components/custom/ArticleContent';
 
 type Props ={
 	isEditing: boolean;
 	article: Object;
-	history: History;
+	history: RouterHistory;
 	createArticle: Function;
 	editArticle: Function;
+	userReducer: UserReducerType;
 }
 
 type State = {
 	isLoading: boolean;
 	isSaving: boolean;
 	isRequired: boolean;
+	isPreview: boolean;
 	textAreaHeight: number;
 	headerImgUrl: string;
 	title: string;
@@ -110,6 +115,7 @@ class ArticleEditor extends Component<Props, State> {
 			isLoading: true,
 			isSaving: false,
 			isRequired: false,
+			isPreview: false,
 			textAreaHeight: 0,
 			headerImgUrl: '',
 			title: '',
@@ -161,7 +167,11 @@ class ArticleEditor extends Component<Props, State> {
 
 		const requiredFields = [headerImgUrl, title, description, content];
 
-		for (let i = 0; i < requiredFields.length; i++) {
+		this.setState({
+			isRequired: false,
+		});
+
+		for (let i = 0; i < requiredFields.length; i += 1) {
 			if (requiredFields[i] === '') {
 				this.setState({
 					isRequired: true,
@@ -193,8 +203,8 @@ class ArticleEditor extends Component<Props, State> {
 			} else {
 				this.props.createArticle({
 					body,
-					success: () => {
-						history.push('/articles');
+					success: (articleId) => {
+						history.push(`/articles/${articleId}/read`);
 					},
 					error: () => {
 						this.setState({
@@ -207,8 +217,10 @@ class ArticleEditor extends Component<Props, State> {
 	}
 
 	render() {
-		const { isEditing, article } = this.props;
-		const { textAreaHeight, headerImgUrl, title, description, content, isSaving, isRequired } = this.state;
+		const { isEditing, article, userReducer: { user } } = this.props;
+		const { 
+			textAreaHeight, headerImgUrl, title, description, content, isSaving, isRequired, isPreview,
+		} = this.state;
 		return (
 			<div style={{ marginTop: 25 }}>
 				<Wrapper>
@@ -223,8 +235,13 @@ class ArticleEditor extends Component<Props, State> {
 								style={{ marginRight: 15 }}
 								bgColor="#007FFF"
 								primary
+								onClick={() => {
+									this.setState({
+										isPreview: !isPreview,
+									});
+								}}
 							>
-								PREVIEW
+								{isPreview ? 'EDITOR' : 'PREVIEW'}
 							</Button>
 							<Button
 								style={{ marginRight: 15 }}
@@ -243,125 +260,143 @@ class ArticleEditor extends Component<Props, State> {
 							</Button>
 						</div>
 					</div>
-					
-					<Rules>
-						<div>
-							Guidelines:
-						</div>
-						<ul>
-							<li>Markdown are supported for the content writing</li>
-							<li>Make sure the content are not too short</li>
-							<li>Make sure the delivered content are understandable by readers</li>
-							<li>Make sure to credit the author if the content or image are not yours</li>
-							<li>All fields are required</li>
-						</ul>
-					</Rules>
 
-					<Container>
+					{isPreview
+						? (
+							<ArticleContent
+								article={{
+									headerImgUrl,
+									title,
+									description,
+									content,
+									createdAt: Date.now()
+								}}
+								author={user}
+							/>
+						) : (
+							<>
+							<Rules>
+								<div>
+									Guidelines:
+								</div>
+								<ul>
+									<li>Markdown are supported for the content writing</li>
+									<li>Make sure the content are not too short</li>
+									<li>Make sure the delivered content are understandable by readers</li>
+									<li>Make sure to credit the author if the content or image are not yours</li>
+									<li>All fields are required</li>
+								</ul>
+							</Rules>
 
-						<Menu>
-							<tbody>
-								<tr>
-									<td style={{ width: 100, paddingRight: 10 }}>
-										<Button
-											bgColor="#000"
-											primary={false}
-										>
-											UPLOAD
-										</Button>
-									</td>
-									<td>
+							<Container>
+								<Menu>
+									<tbody>
+										<tr>
+											<td style={{ width: 100, paddingRight: 10 }}>
+												<Button
+													bgColor="#000"
+													primary={false}
+												>
+													UPLOAD
+												</Button>
+											</td>
+											<td>
+												<input
+													type="text"
+													disabled
+													style={{ width: '100%' }}
+													placeholder="Uploade image or directly paste the url in the editor"
+												/>
+											</td>
+										</tr>
+									</tbody>
+								</Menu>
+
+								{isRequired
+									&& (
+										<div style={{ fontSize: 20, marginBottom: 20, backgroundColor: 'red', padding: '5px 10px', color: '#fff' }}>
+											<em>All fields are required</em>
+										</div>
+									)}
+
+								<HeaderImg>
+									<div className="label">
+										* Header Image
+									</div>
+									<div>
 										<input
 											type="text"
-											disabled
-											style={{ width: '100%' }}
-											placeholder="Uploade image or directly paste the url in the editor"
+											placeholder="Header Image Url"
+											style={{ maxWidth: 500, fontSize: 12 }}
+											onChange={(e) => this.handleChange(e, 'headerImgUrl')}
+											value={headerImgUrl}
 										/>
-									</td>
-								</tr>
-							</tbody>
-						</Menu>
+									</div>
+								</HeaderImg>
+								<ContentContainer>
+									<div className="label">
+										* Title
+									</div>
+									<div>
+										<input
+											type="text"
+											placeholder="Title"
+											style={{ fontSize: 30 }}
+											onChange={(e) => this.handleChange(e, 'title')}
+											value={title}
+										/>
+									</div>
+								</ContentContainer>
 
-						{isRequired
-							&& (
-								<div style={{ fontSize: 20, marginBottom: 20, backgroundColor: 'red', padding: '5px 10px', color: '#fff' }}>
-									<em>All fields are required</em>
-								</div>
-							)}
+								<ContentContainer>
+									<div className="label">
+										* Description
+									</div>
+									<div>
+										<input
+											type="text"
+											placeholder="Description"
+											style={{ fontSize: 20 }}
+											onChange={(e) => this.handleChange(e, 'description')}
+											value={description}
+										/>
+									</div>
+								</ContentContainer>
 
-						<HeaderImg>
-							<div className="label">
-								* Header Image
-							</div>
-							<div>
-								<input
-									type="text"
-									placeholder="Header Image Url"
-									style={{ maxWidth: 500, fontSize: 12 }}
-									onChange={(e) => this.handleChange(e, 'headerImgUrl')}
-									value={headerImgUrl}
-								/>
-							</div>
-						</HeaderImg>
-						<ContentContainer>
-							<div className="label">
-								* Title
-							</div>
-							<div>
-								<input
-									type="text"
-									placeholder="Title"
-									style={{ fontSize: 30 }}
-									onChange={(e) => this.handleChange(e, 'title')}
-									value={title}
-								/>
-							</div>
-						</ContentContainer>
-
-						<ContentContainer>
-							<div className="label">
-								* Description
-							</div>
-							<div>
-								<input
-									type="text"
-									placeholder="Description"
-									style={{ fontSize: 20 }}
-									onChange={(e) => this.handleChange(e, 'description')}
-									value={description}
-								/>
-							</div>
-						</ContentContainer>
-
-						<ContentContainer>
-							<div className="label">
-								* Content
-							</div>
-							<div>
-								<textarea
-									type="text"
-									placeholder="Start typing here (markdown supported)"
-									style={{ height: textAreaHeight }}
-									onChange={(e) => {
-										this.setState({
-											content: e.target.value,
-											textAreaHeight: this.textAreaEl.scrollHeight,
-										});
-									}}
-									value={content}
-									ref={el => this.textAreaEl = el}
-								/>
-							</div>
-						</ContentContainer>
-					</Container>
+								<ContentContainer>
+									<div className="label">
+										* Content
+									</div>
+									<div>
+										<textarea
+											type="text"
+											placeholder="Start typing here (markdown supported)"
+											style={{ height: textAreaHeight }}
+											onChange={(e) => {
+												this.setState({
+													content: e.target.value,
+													textAreaHeight: this.textAreaEl.scrollHeight,
+												});
+											}}
+											value={content}
+											ref={el => this.textAreaEl = el}
+										/>
+									</div>
+								</ContentContainer>
+							</Container>
+							</>
+						)}
 				</Wrapper>
 			</div>
 		);
 	}
 }
 
-const mapStateToProps = () => {
-	return { };
+const mapStateToProps = state => {
+	const { userReducer } = state;
+	return {
+		userReducer,
+	};
 };
 
 const mapDispatchToProps = dispatch => {

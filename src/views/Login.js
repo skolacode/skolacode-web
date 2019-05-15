@@ -1,8 +1,13 @@
 //@flow
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { withRouter } from 'react-router-dom';
+import type { LocationShape } from 'react-router-dom';
+import queryString from 'query-string';
 
-type Props = {};
+type Props = {
+	location: LocationShape;
+};
 
 type State = {};
 
@@ -12,6 +17,14 @@ const Container = styled.div`
 	top: 0;
 	bottom: 0;
 	width: 100%;
+
+	.red-box {
+		padding: 5px 10px;
+		color: red;
+		border: 1px solid red;
+		font-size: 12px;
+		margin-bottom: 15px;
+	}
 
 	.box {
 		background-color: ${props => props.theme.secondaryColor};
@@ -45,9 +58,17 @@ const Container = styled.div`
 
 class Login extends Component<Props, State> {
 	render() {
+		const { location: { search } } = this.props;
+		const { error } = queryString.parse(search);
 		return (
 			<Container>
 				<div className="box">
+					{error === 'unauthorize'
+						&& (
+							<div className="red-box">
+								You are not authorized to Sign In
+							</div>
+						)}
 					<div className="content">
 						<div className="skolacode">
 							SKOLACODE.<span style={{ fontSize: 12 }}>COM</span>
@@ -55,6 +76,9 @@ class Login extends Component<Props, State> {
 						<div className="info">
 							WELCOME
 						</div>
+					</div>
+					<div style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 20 }}>
+						Only white listed user can Sign In.
 					</div>
 					<div
 						className="btn"
@@ -73,4 +97,4 @@ class Login extends Component<Props, State> {
 	}
 }
 
-export default Login;
+export default withRouter(Login);

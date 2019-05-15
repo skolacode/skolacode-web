@@ -4,9 +4,11 @@ import { withRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import Cookies from 'js-cookie';
 import queryString from 'query-string';
+import { connect } from 'react-redux';
 
 import './App.css';
 import Layout from './Layout';
+import { fetchUser } from './store/user/actions';
 
 const theme = {
 	primaryColor: '#000000',
@@ -17,6 +19,7 @@ const theme = {
 type Props = {
 	children: Node;
 	location: Location;
+	fetchUser: Function;
 }
 
 class App extends Component<Props, {}> {
@@ -30,7 +33,13 @@ class App extends Component<Props, {}> {
 		}
 	}
 
-	componentDidMount() {}
+	componentDidMount() {
+		this.props.fetchUser({
+			body: {},
+			success: () => {},
+			error: () => {},
+		});
+	}
 
 	render() {
 		return (
@@ -45,4 +54,12 @@ class App extends Component<Props, {}> {
 	}
 }
 
-export default withRouter(App);
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = dispatch => {
+	return {
+		fetchUser: req => dispatch(fetchUser(req)),
+	};
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

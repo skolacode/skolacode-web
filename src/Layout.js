@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 type Props = {
 	children: Node;
+	userReducer: Object;
 }
 
 type State = {}
@@ -47,6 +49,18 @@ const Container  = styled.div`
 	padding-bottom: 20px;
 `;
 
+const ProfileImg = styled.div`
+	background-color: #000;
+	border-radius: 100%;
+	width: 30px;
+	height: 30px;
+	margin-left: 25px;
+	background-image: url(${props => props.src});
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+`;
+
 const Footer = styled.footer`
 	background-color: black;
 	position: absolute;
@@ -84,6 +98,7 @@ const NAVIGATION = [
 
 class Layout extends Component<Props, State> {
 	render() {
+		const { userReducer: { user } } = this.props;
 		return (
 			<div>
 				<NavigationContainer>
@@ -104,6 +119,14 @@ class Layout extends Component<Props, State> {
 										</div>
 									</td>
 								))}
+								{user.displayName
+									&& (
+										<td>
+											<Link to="/profile">
+												<ProfileImg src={user.avatarUrl}/>
+											</Link>
+										</td>
+									)}
 							</tr>
 						</tbody>
 					</NavigationTable>
@@ -116,7 +139,7 @@ class Layout extends Component<Props, State> {
 						SKOLACODE.<span style={{ fontSize: 12 }}>COM</span>
 					</div>
 					<div style={{ fontSize: 10, textAlign: 'center' }}>
-						<div>Icons made by <a style={{ color: '#fff' }} href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a style={{ color: '#fff' }} href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a style={{ color: '#fff' }} href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+						<div>Icons made by <a style={{ color: '#fff' }} href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a style={{ color: '#fff' }} href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a style={{ color: '#fff' }} href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC 3.0 BY</a></div>
 					</div>
 				</Footer>
 			</div>
@@ -124,4 +147,11 @@ class Layout extends Component<Props, State> {
 	}
 }
 
-export default Layout;
+const mapStateToProps = state => {
+	const { userReducer } = state;
+	return {
+		userReducer,
+	};
+};
+
+export default connect(mapStateToProps)(Layout);
