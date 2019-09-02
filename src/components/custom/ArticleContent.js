@@ -140,8 +140,8 @@ class ArticleContent extends Component<Props, State> {
 				<div>
 					<HeaderImg src={article.headerImgUrl} alt="" style={{ width: '100%' }}/>
 				</div>
-				<Wrapper style={{ margin: '0 auto', border: '0px solid black', maxWidth: 900 }}>
-					<Container style={{ padding: '0 50px' }}>
+				<Wrapper style={{ margin: '0 auto' }}>
+					<Container style={{ padding: '0 25px' }}>
 						<div className="title">
 							{article.title}
 						</div>

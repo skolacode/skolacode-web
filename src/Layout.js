@@ -1,15 +1,19 @@
 //@flow
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import type { RouterHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 type Props = {
 	children: Node;
+	history: RouterHistory;
 	userReducer: Object;
 }
 
-type State = {}
+type State = {
+	isPhoneNavigations: boolean;
+}
 
 const NavigationContainer = styled.div`
 	position: fixed;
@@ -19,6 +23,18 @@ const NavigationContainer = styled.div`
 	height: 60px;
 	background-color: ${props => props.theme.secondaryColor};
 	z-index: 10;
+	transition: all 0.25s;
+	overflow: hidden;
+
+	.phone-nav-options {
+		text-align: center;
+		font-weight: bold;
+		font-size: 16px;
+		padding: 10px 0;
+		:hover {
+			opacity: 0.7;
+		}
+	}
 `;
 
 const NavigationTable = styled.table`
@@ -34,17 +50,32 @@ const NavigationTable = styled.table`
 		cursor: pointer;
 	}
 
-	.nav {
-		width: 150px;
+	.nav > span {
+		margin-left: 50px;
+		padding: 10px 0;
 		:hover {
 			opacity: 0.7;
+		}
+	}
+
+	.phone-nav {
+		display: none;
+	}
+
+	@media only screen and (max-width: 800px) {
+		.nav {
+			display: none;
+		}
+
+		.phone-nav {
+			display: initial;
 		}
 	}
 `;
 
 const Container  = styled.div`
 	width: 100%;
-	margin: 0px auto;
+	margin: 0px auto 50px;
 	padding-top: 60px;
 	padding-bottom: 20px;
 `;
@@ -66,14 +97,15 @@ const Footer = styled.footer`
 	position: absolute;
   bottom: 0;
   width: 100%;
-	height: 50px;
+	height: 100px;
 	color: ${props => props.theme.secondaryColor};
+	overflow: hidden;
 	
 	.skolacode {
 		text-align: center;
 		font-family: 'Montserrat';
 		letter-spacing: 5px;
-		padding-top: 15px;
+		padding-top: 20px;
 	}
 `;
 
@@ -97,10 +129,26 @@ const NAVIGATION = [
 ];
 
 class Layout extends Component<Props, State> {
+	constructor(props) {
+		super(props);
+		this.state = {
+			isPhoneNavigations: false,
+		};
+	}
+
+
+	onClickPhoneNav = () => {
+		const { isPhoneNavigations } = this.state;
+		this.setState({
+			isPhoneNavigations: !isPhoneNavigations,
+		});
+	}
+
 	render() {
-		const { userReducer: { user } } = this.props;
+		const { userReducer: { user }, history } = this.props;
+		const { isPhoneNavigations } = this.state;
 		return (
-			<div>
+			<div style={{ overflow: 'hidden' }}>
 				<NavigationContainer>
 					<NavigationTable>
 						<tbody>
@@ -110,15 +158,28 @@ class Layout extends Component<Props, State> {
 										SKOLACODE.<span style={{ fontSize: 12 }}>COM</span>
 									</div>
 								</td>
-								{NAVIGATION.map(each => (
-									<td key={each.link} className="nav">
-										<div>
-											<Link to={each.link}>
-												{each.name}
-											</Link>
-										</div>
-									</td>
-								))}
+								<td className="nav">
+									{NAVIGATION.map(each => (
+										<span
+											key={each.link}
+											onClick={() => {
+												history.push(each.link);
+											}}
+										>
+											{each.name}
+										</span>
+									))}
+								</td>
+								<td className="phone-nav">
+									<div
+										style={{
+											fontSize: 50, fontWeight: 'bold', textAlign: 'center'
+										}}
+										onClick={this.onClickPhoneNav}
+									>
+										=
+									</div>
+								</td>
 								{user.displayName
 									&& (
 										<td>
@@ -131,14 +192,30 @@ class Layout extends Component<Props, State> {
 						</tbody>
 					</NavigationTable>
 				</NavigationContainer>
+
+				<NavigationContainer style={{ height: isPhoneNavigations ? 180 : 60, zIndex: 9, top: isPhoneNavigations ? 60 : 0 }}>
+					{NAVIGATION.map(each => (
+						<div
+							className="phone-nav-options"
+							key={each.link}
+							onClick={() => {
+								history.push(each.link);
+							}}
+						>
+							{each.name}
+						</div>
+					))}
+				</NavigationContainer>
+
 				<Container>
 					{this.props.children}
 				</Container>
+				
 				<Footer>
 					<div className="skolacode">
 						SKOLACODE.<span style={{ fontSize: 12 }}>COM</span>
 					</div>
-					<div style={{ fontSize: 10, textAlign: 'center' }}>
+					<div style={{ fontSize: 8, textAlign: 'center', marginTop: 20 }}>
 						<div>Icons made by <a style={{ color: '#fff' }} href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a style={{ color: '#fff' }} href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a style={{ color: '#fff' }} href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC 3.0 BY</a></div>
 					</div>
 				</Footer>
@@ -154,4 +231,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps)(Layout);
+export default withRouter(connect(mapStateToProps)(Layout));

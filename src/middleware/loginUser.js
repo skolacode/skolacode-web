@@ -13,7 +13,7 @@ type State = {
 
 type Props = {
 	user: Object;
-	history: History;
+	history: Object;
 	fetchUser: Function;
 }
 

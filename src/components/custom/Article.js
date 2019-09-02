@@ -54,6 +54,11 @@ class Article extends Component<Props, {}> {
 					</div>
 					<div className="author">
 						{article.author.displayName} {moment(article.createdAt).format('DD MMMM YYYY')}
+						{article.createdAt !== article.updatedAt
+							&& (
+								<span style={{ paddingLeft: 20, opacity: 0.5 }}><em>Last updated: {moment(article.updatedAt).format('DD MMMM YYYY')}</em></span>
+							)
+						}
 					</div>
 				</div>
 			</ArticleContainer>

@@ -37,7 +37,7 @@ const MainContent = styled.table`
 
 		.secondary {
 			font-size: 20px;
-			margin-bottom: 20px;
+			margin: 20px 0;
 			font-weight: normal;
 			line-height: 30px;
 		}
@@ -57,6 +57,29 @@ const MainContent = styled.table`
 			:hover {
 				box-shadow: 5px 5px;
 			}
+		}
+
+		@media only screen and (max-width: 800px) {
+			.main {
+				font-size: 25px;
+				span {
+					font-size: 15px;
+				}
+			}
+
+			.main, .secondary{
+				padding: 0 20px;
+			}
+
+			.button {
+				margin-left: 20px;
+			}
+		}
+	}
+
+	@media only screen and (max-width: 800px) {
+		.header-image {
+			display: none;
 		}
 	}
 `;
@@ -107,7 +130,7 @@ class Home extends Component<Props, State> {
 											</div>
 										</Link>
 									</td>
-									<td style={{ width: 256, textAlign: 'right' }}>
+									<td className="header-image" style={{ width: 256, textAlign: 'right' }}>
 										<img src={data_icon} alt="" style={{ width: '100%' }}/>
 									</td>
 								</tr>

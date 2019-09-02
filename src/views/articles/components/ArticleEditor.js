@@ -154,7 +154,7 @@ class ArticleEditor extends Component<Props, State> {
 
 	onHandleAction = (isPublished) => {
 		const { isEditing, article, history } = this.props;
-		const { headerImgUrl, title, description, content, isSaving, isRequired } = this.state;
+		const { headerImgUrl, title, description, content, isSaving } = this.state;
 
 		let body = {
 			headerImgUrl,
@@ -167,17 +167,23 @@ class ArticleEditor extends Component<Props, State> {
 
 		const requiredFields = [headerImgUrl, title, description, content];
 
+		let isRequired = false;
+
 		this.setState({
 			isRequired: false,
 		});
 
 		for (let i = 0; i < requiredFields.length; i += 1) {
 			if (requiredFields[i] === '') {
-				this.setState({
-					isRequired: true,
-				});
+				isRequired = true;
 				break;
 			}
+		}
+
+		if (isRequired) {
+			this.setState({
+				isRequired: true,
+			});
 		}
 		
 		if(!isSaving && !isRequired) {

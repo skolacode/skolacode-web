@@ -17,12 +17,8 @@ const MainContainer = styled.div`
 	display: table;
 	width: 100%;
 
-	& > a > div {
-		margin: 25px 5% 25px 0;
-	}
-
-	& > a > div:nth-child(even) {
-		margin: 25px 0 25px 5%;
+	@media only screen and (max-width: 800px) {
+		padding: 0 15px 50px;
 	}
 `;
 
@@ -88,18 +84,24 @@ class Courses extends Component<Props, State> {
 				</PageLabel>
 
 				<MainContainer>
-					{COURSES_OFFERED.map(each => (
-						<a href={each.link} key={each.name}>
-							<Container>
-								<img src={each.img} alt="" />
-								<div style={{ marginBottom: 10 }}>
-									{each.name}
-								</div>
-								<div style={{ color: '#aaa', fontSize: 12 }}>
-									{each.desc}
-								</div>
-							</Container>
-						</a>
+					{COURSES_OFFERED.map((each, i) => (
+						<>
+							<a href={each.link} key={each.name}>
+								<Container style={{ margin: (i + 1) % 2 === 0 ? '25px 0 25px 5%' : '25px 5% 25px 0' }}>
+									<img src={each.img} alt="" />
+									<div style={{ marginBottom: 10 }}>
+										{each.name}
+									</div>
+									<div style={{ color: '#aaa', fontSize: 12 }}>
+										{each.desc}
+									</div>
+									<div style={{ color: '#000', fontSize: 10, marginTop: 15 }}>
+										Currently only available in <strong>Malayisa</strong>
+									</div>
+								</Container>
+							</a>
+							{(i + 1) % 2 === 0 && <div style={{ clear: 'both' }} />}
+						</>
 					))}
 				</MainContainer>
 			</Wrapper>

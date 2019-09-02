@@ -9,6 +9,7 @@ import { Wrapper, PageLabel } from '../../components/ui/style';
 import { fetchUserPublishedArticles, fetchUserUnpublishedArticles } from '../../store/articles/actions';
 import UserArticles from './components/UserArticles';
 import { WEB_URL } from '../../utils/config';
+import DataLoader from '../../components/custom/DataLoader';
 
 type Props = {
 	user: Object;
@@ -61,6 +62,9 @@ const Tab = styled.span`
 	padding: 15px;
 	font-weight: bold;
 	cursor: pointer;
+	:hover {
+		opacity: 0.85;
+	}
 `;
 
 class Profile extends Component<Props, State> {
@@ -73,21 +77,37 @@ class Profile extends Component<Props, State> {
 	}
 
 	async componentDidMount() {
-		await this.props.fetchUserPublishedArticles({
-			body: {},
-			success: () => {},
-			error: () => {},
-		});
+		const { userPublishedArticles, userUnpublishedArticles } = this.props;
 
-		this.props.fetchUserUnpublishedArticles({
-			body: {},
-			success: () => {
-				this.setState({
-					isLoading: false,
-				});
-			},
-			error: () => {},
-		});
+		if (userPublishedArticles.length === 0) {
+			await this.props.fetchUserPublishedArticles({
+				body: {},
+				success: () => {},
+				error: () => {},
+			});
+		}
+
+		if (userUnpublishedArticles.length === 0) {
+			this.props.fetchUserUnpublishedArticles({
+				body: {},
+				success: () => {
+					this.setState({
+						isLoading: false,
+					});
+				},
+				error: () => {},
+			});
+		}
+
+		if (userPublishedArticles.length !== 0 && userUnpublishedArticles.length !== 0) {
+			this.setState({
+				isLoading: false,
+			});
+		} else if (userUnpublishedArticles.length !== 0) {
+			this.setState({
+				isLoading: false,
+			});
+		}
 	}
 
 	onChangeTab = (val: string) => {
@@ -171,29 +191,29 @@ class Profile extends Component<Props, State> {
 							>
 								UNPUBLISHED ARTICLES
 							</Tab>
-							<Tab
-								primary={false}
+							<Link
 								style={{
-									backgroundColor: '#000',
-									boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.5)',
-									borderRadius: 2,
+									color: '#fff',
 								}}
+								to="/articles/new"
 							>
-								<Link
+								<Tab
+									primary={false}
 									style={{
-										color: '#fff',
+										backgroundColor: '#000',
+										boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.5)',
+										borderRadius: 2,
 									}}
-									to="/articles/new"
 								>
 									+ NEW ARTICLE
-								</Link>
-							</Tab>
+								</Tab>
+							</Link>
 						</div>
 					</div>
 					<div>
 						{isLoading
 							? (
-								'Loading...'
+								<DataLoader style={{ marginTop: 75 }} width={50} />
 							) : (
 								<>
 									{tab === 'articles'

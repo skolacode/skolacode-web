@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 
 import { fetchArticle } from '../../store/articles/actions';
 
-import data_icon from '../../assets/icons/data.png';
 import ArticleContent from '../../components/custom/ArticleContent';
 import { Wrapper } from '../../components/ui/style';
+import DataLoader from '../../components/custom/DataLoader';
 
 type Props = {
 	article: Object;
@@ -22,6 +22,7 @@ type Props = {
 type State = {
 	isLoading: boolean;
 };
+
 class ReadArticle extends Component<Props, State> {
 	constructor(props) {
 		super(props);
@@ -53,12 +54,7 @@ class ReadArticle extends Component<Props, State> {
 			<div>
 				{isLoading
 					? (
-						<div style={{ marginTop: 50, textAlign: 'center' }}>
-							<img src={data_icon} style={{ width: 100 }} alt=""/>
-							<div style={{ marginTop: 20, fontSize: 20, fontWeight: 'bold', color: '#000' }}>
-								Loading content...
-							</div>
-						</div>
+						<DataLoader />
 					) : (
 						<Wrapper>
 							<ArticleContent

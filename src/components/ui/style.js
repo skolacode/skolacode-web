@@ -18,12 +18,15 @@ const Button = styled.span`
 	color: ${props => props.theme.secondaryColor};
 	text-align: center;
 	font-weight: bold;
-	background-color: ${props => props.bgColor};
+	background-color: ${props => props.bgColor || '#000'};
 	font-size: 14px;
 	position: relative;
 	top: ${props => props.primary ? '5px' : '0'};
 	cursor: pointer;
 	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+	:hover {
+		opacity: 0.85;
+	}
 `;
 
 export {

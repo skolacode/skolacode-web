@@ -6,13 +6,19 @@ import { connect } from 'react-redux';
 
 import Article from './Article';
 import NoticeBoard from './NoticeBoard';
-import { Wrapper, PageLabel } from '../ui/style';
+import { Wrapper, PageLabel, Button } from '../ui/style';
 import { fetchPublishedArticles } from '../../store/articles/actions';
+import DataLoader from './DataLoader';
 
 type Props = {
 	title: string;
 	publishedArticles: Array<Object>;
+	publishedArticlesCursor: Number;
 	fetchPublishedArticles: Function;
+}
+
+type State = {
+	isLoading: boolean;
 }
 
 const Content = styled.table`
@@ -37,20 +43,60 @@ const Content = styled.table`
 		width: 250px;
 		padding-left: 25px;
 	}
+
+	@media only screen and (max-width: 800px) {
+		.first {
+			padding: 0 20px 30px;
+		}
+		.second {
+			display: none;
+		}
+	}
 `;
 
-class ArticleWithNoticeBoard extends Component<Props, {}> {
-	componentDidMount() {
-		this.props.fetchPublishedArticles({
-			success: () => {
+class ArticleWithNoticeBoard extends Component<Props, State> {
+	constructor(props) {
+		super(props);
+		this.state = {
+			isLoading: true,
+		};
+	}
 
+	componentDidMount() {
+		if (this.props.publishedArticles.length === 0) {
+			this.props.fetchPublishedArticles({
+				success: () => {
+					this.setState({
+						isLoading: false,
+					});
+				},
+				error: () => {},
+			});
+		}
+	}
+
+	onClickLoadMore = () => {
+		const { publishedArticlesCursor } = this.props;
+
+		this.setState({
+			isLoading: true,
+		});
+
+		this.props.fetchPublishedArticles({
+			body: {
+				cursor: publishedArticlesCursor,
+			},
+			success: () => {
+				this.setState({
+					isLoading: false,
+				});
 			},
 			error: () => {},
 		});
 	}
 
 	render() {
-		const { title, publishedArticles } = this.props;
+		const { title, publishedArticles, publishedArticlesCursor } = this.props;
 		return (
 			<div>
 				<Wrapper>
@@ -63,15 +109,41 @@ class ArticleWithNoticeBoard extends Component<Props, {}> {
 											{title}
 										</PageLabel>
 
-										{publishedArticles.map(each => (
-											<div key={each._id}>
-												<Link to={`/articles/${each._id}/read`}>
-													<Article article={each}/>
-													<div className="border-line"/>
-												</Link>
-											</div>
-										))}
+										{publishedArticles.length === 0 && this.state.isLoading
+											? (
+												<DataLoader width={50} />
+											) : (
+												publishedArticles.map(each => (
+													<div key={each._id}>
+														<Link to={`/articles/${each._id}/read`}>
+															<Article article={each}/>
+															<div className="border-line"/>
+														</Link>
+													</div>
+												))
+											)}		
 
+										{publishedArticlesCursor !== 0
+											&& (
+												<>
+												{this.state.isLoading
+													? (
+														<DataLoader
+															width={25} 
+															style={{ marginTop: 10 }}
+															textStyle={{ fontSize: 15, marginTop: 10 }}
+														/>
+													) : (
+														<div style={{ textAlign: 'center' }}>
+															<Button
+																onClick={this.onClickLoadMore}
+															>
+																Load more...
+															</Button>
+														</div>
+													)}
+												</>
+											)}
 									</td>
 									<td className="second">
 										<NoticeBoard />
@@ -88,11 +160,12 @@ class ArticleWithNoticeBoard extends Component<Props, {}> {
 
 const mapStateToProps = state => {
 	const {
-		articlesReducer: { publishedArticles }
+		articlesReducer: { publishedArticles, publishedArticlesCursor }
 	} = state;
 
 	return {
-		publishedArticles
+		publishedArticles,
+		publishedArticlesCursor,
 	};
 };
 

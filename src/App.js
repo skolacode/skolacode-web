@@ -34,11 +34,14 @@ class App extends Component<Props, {}> {
 	}
 
 	componentDidMount() {
-		this.props.fetchUser({
-			body: {},
-			success: () => {},
-			error: () => {},
-		});
+
+		if (Cookies.get('SKOLACODE-SID')) {
+			this.props.fetchUser({
+				body: {},
+				success: () => {},
+				error: () => {},
+			});
+		}
 	}
 
 	render() {

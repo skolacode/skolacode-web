@@ -1,4 +1,4 @@
-import { GET_PUBLISHED_ARTICLES, GET_ARTICLE, GET_UNPUBLISHED_ARTICLES, GET_USER_PUBLISHED_ARTICLES, GET_USER_UNPUBLISHED_ARTICLES } from './actions';
+import { GET_PUBLISHED_ARTICLES, GET_ARTICLE, GET_UNPUBLISHED_ARTICLES, GET_USER_PUBLISHED_ARTICLES, GET_USER_UNPUBLISHED_ARTICLES, SET_PUBLISHED_CURSOR } from './actions';
 import ArticleType from '../../models/article';
 
 export type ArticlesReducerType = {
@@ -7,6 +7,7 @@ export type ArticlesReducerType = {
 	userPublishedArticles: Array<ArticleType>;
 	userUnpublishedArticles: Array<ArticleType>;
 	article: ArticleType;
+	publishedArticlesCursor: Number;
 }
 
 const initState = {
@@ -15,6 +16,7 @@ const initState = {
 	userPublishedArticles: [],
 	userUnpublishedArticles: [],
 	article: {},
+	publishedArticlesCursor: 0,
 };
 
 const articlesReducer = (state = initState, action) => {
@@ -43,6 +45,11 @@ const articlesReducer = (state = initState, action) => {
 		return {
 			...state,
 			article: action.payload,
+		};
+	case SET_PUBLISHED_CURSOR:
+		return {
+			...state,
+			publishedArticlesCursor: action.payload,
 		};
 	default:
 		return state;
